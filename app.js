@@ -7,11 +7,18 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const MONGO_URL = 'mongodb://127.0.0.1:27017/wanderlust';
 const ExpressError = require("./utils/ExpressError.js")
-
-
-
+const session = require("express-session");
+const sessionOptions = {
+    secret: "mysupersecretcode",
+    resave: false,
+    saveUninitialized: true,
+};
+app.use(session(sessionOptions));
 const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js")
+//should i run  ? yes  ste is crrshed u sw? your net is not working i saw it but it was very blurry 
+// ok should i discconnect ?
+
 main()
     .then(() => {
         console.log('Connected to MongoDB');
@@ -36,8 +43,8 @@ app.get("/", (req, res) => {
 
 
 
-app.use("/listings",listings) ;
-app.use("/listings/:id/reviews",reviews)
+app.use("/listings", listings);
+app.use("/listings/:id/reviews", reviews)
 
 
 // if no matching response found above
@@ -47,7 +54,7 @@ app.all("*", (req, res, next) => {
 
 app.use((err, req, res, next) => {
     let { statusCode = 500, message = "something went wrong" } = err;
-    res.status(statusCode).render("error.ejs",{err}) ;
+    res.status(statusCode).render("error.ejs", { err });
     // res.status(statusCode).send(message);
     // res.send("something went wrong ") ;
 });
