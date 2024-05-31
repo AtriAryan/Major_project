@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,11 @@
     "joi": "^17.13.1",
     "method-override": "^3.0.0",
     "mongoose": "^8.3.4",
-    "nodemon": "^3.1.0"
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^8.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.1"
   }
 }

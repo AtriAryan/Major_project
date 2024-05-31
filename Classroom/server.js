@@ -88,10 +88,13 @@ app.get("/reqcount", (req, res) => {
     }
     res.send(`you sent a request ${req.session.count} times`);
 })
+// like if i  run without this below route but when i uncomment this route it should work but it does not
+// did u see?
 
-// app.get("/test",(req,res)=>{
-// res.send("test successful!")
-// })
+app.get("/test",(req,res)=>{
+console.log("this is a test route !")
+.send("test successful!")
+})
 
 
 app.listen(3000, () => {

@@ -9,5 +9,15 @@
         <a class="nav-item nav-link" href="/listings">All listings</a>
         <a class="nav-item nav-link" href="/listings/new">Create new Listing</a>
       </div>
+      <div class="navbar-nav ms-auto">
+        <!-- curruser is undefined -->
+        <% if(!currUser) { %>
+        <a class="nav-item nav-link active" href="/signup">Sign up</a>
+        <a class="nav-item nav-link" href="/login">Log in</a>
+        <% } %>
+        <% if(currUser) { %>
+        <a class="nav-item nav-link" href="/logout">Log out</a>
+         <% } %>
+      </div>
     </div>
   </nav>

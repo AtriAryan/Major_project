@@ -8,16 +8,57 @@ const ejsMate = require("ejs-mate");
 const MONGO_URL = 'mongodb://127.0.0.1:27017/wanderlust';
 const ExpressError = require("./utils/ExpressError.js")
 const session = require("express-session");
+const flash = require("connect-flash");
+const passport = require("passport") ;
+const localStrategy = require("passport-local");
+const User = require("./models/user.js");
+
+const listingsRouter = require("./routes/listing.js");
+const reviewRouter = require("./routes/review.js") ;
+const userRouter = require("./routes/user.js") ;
+
 const sessionOptions = {
     secret: "mysupersecretcode",
     resave: false,
     saveUninitialized: true,
+    cookie : {
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7 ,
+        maxAge : 1000 * 60 * 60 * 24 * 7,
+        httpOnly : true,
+    }
 };
+// will comee before routess
 app.use(session(sessionOptions));
-const listings = require("./routes/listing.js");
-const reviews = require("./routes/review.js")
-//should i run  ? yes  ste is crrshed u sw? your net is not working i saw it but it was very blurry 
-// ok should i discconnect ?
+app.use(flash()) ;
+
+//passport wala code k liye session hona chaye 
+app.use(passport.initialize());
+// every request to know to which session it belons to
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate())) ;
+
+// to store & remove info of user in a sesion
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+app.use((req,res,next)=>{
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    res.locals.currUser = req.user ;
+    next() ;
+})
+
+app.get("/demouser",async(req,res)=>{
+    let fakeuser = new User({
+        email : "abc@gmail.com",
+        username : "delta-student"
+    });
+   let registeredUser = await User.register(fakeuser,"hello!");
+   res.send(registeredUser) ;
+})
+
+
+
 
 main()
     .then(() => {
@@ -43,8 +84,9 @@ app.get("/", (req, res) => {
 
 
 
-app.use("/listings", listings);
-app.use("/listings/:id/reviews", reviews)
+app.use("/listings", listingsRouter);
+app.use("/listings/:id/reviews", reviewRouter)
+app.use("/",userRouter) ;
 
 
 // if no matching response found above
@@ -52,11 +94,19 @@ app.all("*", (req, res, next) => {
     next(new ExpressError(404, "Page not found"));
 });
 
+// app.use((err, req, res, next) => {
+//     let { statusCode = 500, message = "something went wrong" } = err;
+//     res.status(statusCode).render("error.ejs", { err });
+//     // res.status(statusCode).send(message);
+//     // res.send("something went wrong ") ;
+// });
 app.use((err, req, res, next) => {
     let { statusCode = 500, message = "something went wrong" } = err;
-    res.status(statusCode).render("error.ejs", { err });
-    // res.status(statusCode).send(message);
-    // res.send("something went wrong ") ;
+    if (statusCode === 500) {
+        res.status(statusCode).render("error.ejs", { err });
+    } else {
+        res.status(404).render("error.ejs", { err });
+    }
 });
 
 app.listen(8080, () => {
