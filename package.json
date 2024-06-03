@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@mapbox/mapbox-sdk": "^0.16.0",
     "cloudinary": "^2.2.0",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.6",
