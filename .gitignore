@@ -1,2 +1,5 @@
+#  Environment variables file
 .env
-nodu_modules/
+
+# Node modules directory
+node_modules/
