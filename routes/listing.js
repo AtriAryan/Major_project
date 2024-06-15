@@ -12,7 +12,7 @@ const {storage} = require("../cloudConfig.js")
 // save uploads in storage
 const upload = multer({storage}) ;
 router
-    .route("/listings")
+    .route("/")
     .get( wrapAsync(listingController.index))
     .post(
         isLoggedIn,
